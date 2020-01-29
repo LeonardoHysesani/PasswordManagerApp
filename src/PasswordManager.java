@@ -84,7 +84,7 @@ public class PasswordManager extends JFrame {
             }
             //checking if both new password fields have the same password
             else if (!newPassword.equals(newPasswordConfirmation)) {
-                JOptionPane.showMessageDialog(null, "Please check new password and/or new password confirmation field.");
+                JOptionPane.showMessageDialog(null, "Passwords do not match. Please check again.");
             }
             //checking if new password is the same as old one
             else if (newPassword.equals(originalPassword)) {
