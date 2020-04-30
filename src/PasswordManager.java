@@ -28,9 +28,9 @@ public class PasswordManager extends JFrame {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
         frame.setVisible(true);
-        frame.setSize(650, 400);
+        frame.setSize(720, 480);
         frame.setLocation(450, 200);
-        frame.setResizable(false);
+        frame.setResizable(true);
     }
 
 
@@ -110,9 +110,9 @@ public class PasswordManager extends JFrame {
                 passwordField3.setEchoChar((char) 0);
             }
             else {
-                passwordField1.setEchoChar('•');
-                passwordField2.setEchoChar('•');
-                passwordField3.setEchoChar('•');
+                passwordField1.setEchoChar((char) 0x2022);
+                passwordField2.setEchoChar((char) 0x2022);
+                passwordField3.setEchoChar((char) 0x2022);
             }
         });
     }
