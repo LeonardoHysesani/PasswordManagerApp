@@ -57,7 +57,7 @@ public class PasswordManager extends JFrame {
             //file management and final steps to changing password
 
             //getting original password from stored file
-            Path file = Paths.get("C:\\Users\\user\\IdeaProjects\\testgui\\src\\password.txt");
+            Path file = Paths.get("/home/leonardo/IdeaProjects/PasswordManagerApp/src/password.txt");
             Scanner fileReader = null;
             try {
                 fileReader = new Scanner(file);
