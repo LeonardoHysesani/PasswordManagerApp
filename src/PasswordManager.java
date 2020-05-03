@@ -29,7 +29,7 @@ public class PasswordManager extends JFrame {
         frame.pack();
         frame.setVisible(true);
         frame.setSize(720, 480);
-        frame.setLocation(450, 200);
+        frame.setLocationRelativeTo(null);
         frame.setResizable(true);
     }
 
@@ -77,7 +77,7 @@ public class PasswordManager extends JFrame {
             System.out.println("Original password retrieved from file : " + originalPassword);
 
 
-            //confirmation proccess
+            //confirmation process
             //checking if current password field is correct
             if (!originalPasswordConfirmation.equals(originalPassword)) {
                 JOptionPane.showMessageDialog(null, "Please check current password field.");
