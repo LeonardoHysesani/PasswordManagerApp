@@ -12,6 +12,9 @@ public class PasswordManager extends JFrame {
     String originalPasswordConfirmation;
     String newPassword;
     String newPasswordConfirmation;
+    Integer selectedAccIndex = 0;
+    String[] accs = {"sdvcs", "vfv", "dfb", "andd","bdsfb"};
+
 
     //swing components
     private JPanel panel1;
@@ -20,6 +23,9 @@ public class PasswordManager extends JFrame {
     private JPasswordField passwordField3;
     private JButton DONEButton;
     private JCheckBox checkBox1;
+    private JLabel accName;
+    private JList<String> list1;
+    private DefaultListModel<String> listModel;
 
     //frame management
     public static void main(String[] args) {
@@ -28,14 +34,41 @@ public class PasswordManager extends JFrame {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
         frame.setVisible(true);
-        frame.setSize(720, 480);
+        frame.setSize(1080, 720);
         frame.setLocationRelativeTo(null);
         frame.setResizable(true);
+
     }
+
+
+
+    /*
+    TODO Add a list with different accounts to choose from and store every password on a separate line in password.txt.
+     Add an option to store a new password and prompt a window to enter the account's name and the corresponding password.
+     Check this for help:
+     https://examples.javacodegeeks.com/desktop-java/swing/java-swing-list-example/
+     Undo changes if needed from github.
+     */
 
 
     //getting/checking/setting passwords and adjusting fields' visibility
     public PasswordManager() {
+
+        accName.setText(selectedAccIndex.toString());
+
+        listModel = new DefaultListModel<>();
+        listModel.addElement("Jasmine Mehra");
+        listModel.addElement("Ankit Mishra");
+        listModel.addElement("Madhuri Sanghvi");
+        listModel.addElement("Alok Kumar");
+        listModel.addElement("Rohit Bothra");
+        listModel.addElement("Rahul Aggarwal");
+
+        list1 = new JList<>(listModel);
+        list1.setSelectedIndex(0);
+        list1.setVisible(true);
+        //list1.addListSelectionListener();
+
         //button action
         DONEButton.addActionListener(e ->{
             //current password field
@@ -116,4 +149,5 @@ public class PasswordManager extends JFrame {
             }
         });
     }
+
 }
