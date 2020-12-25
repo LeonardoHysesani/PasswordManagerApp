@@ -3,13 +3,14 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.NoSuchAlgorithmException;
 import java.util.Collections;
 import java.util.Scanner;
 
 public class PasswordManager extends JFrame {
     //variables
-    static String originalPassword;
-    String originalPasswordConfirmation;
+    static String originalHash;
+    String givenPassword;
     String newPassword;
     String newPasswordConfirmation;
 
@@ -39,9 +40,9 @@ public class PasswordManager extends JFrame {
         //button action
         DONEButton.addActionListener(e ->{
             //current password field
-            originalPasswordConfirmation = String.valueOf((passwordField1.getPassword()));
+            givenPassword = String.valueOf((passwordField1.getPassword()));
             //added to help if trying to debug
-            System.out.println("Current password field : " + originalPasswordConfirmation);
+            System.out.println("Current password field : " + givenPassword);
 
             //new password field
             newPassword = String.valueOf((passwordField2.getPassword()));
@@ -56,8 +57,8 @@ public class PasswordManager extends JFrame {
 
             //file management and final steps to changing password
 
-            //getting original password from stored file
-            Path file = Paths.get("C:\\Users\\user\\IdeaProjects\\testgui\\src\\password.txt");
+            //getting hash from stored file
+            Path file = Paths.get("/home/leonardo/IdeaProjects/PasswordManagerApp/src/password.txt");
             Scanner fileReader = null;
             try {
                 fileReader = new Scanner(file);
@@ -65,40 +66,44 @@ public class PasswordManager extends JFrame {
                 ex.printStackTrace();
             }
 
-            //setting original password's value to variable
+            //setting hash's value to variable
             assert fileReader != null;
             try {
-                originalPassword = fileReader.next();
+                originalHash = fileReader.next();
             }
             catch (Exception e1){
-                originalPassword = "";
+                originalHash = "";
             }
             //added to help if trying to debug
-            System.out.println("Original password retrieved from file : " + originalPassword);
+            System.out.println("Hash retrieved from file : " + originalHash);
 
 
             //confirmation process
             //checking if current password field is correct
-            if (!originalPasswordConfirmation.equals(originalPassword)) {
-                JOptionPane.showMessageDialog(null, "Please check current password field.");
-            }
-            //checking if both new password fields have the same password
-            else if (!newPassword.equals(newPasswordConfirmation)) {
-                JOptionPane.showMessageDialog(null, "Passwords do not match. Please check again.");
-            }
-            //checking if new password is the same as old one
-            else if (newPassword.equals(originalPassword)) {
-                JOptionPane.showMessageDialog(null, "New password can't be old password.");
-            }
-            else {
-                //finally changing password if everything is correct
-                try {
-                    Files.write(file, Collections.singleton(newPassword));
-                    //password changed message
-                    JOptionPane.showMessageDialog(null, "Password changed succesfully. New password is : " + newPassword);
-                } catch (IOException ex) {
-                    ex.printStackTrace();
+            try {
+                if (!originalHash.equals(Encrypt.text(givenPassword))) {
+                    JOptionPane.showMessageDialog(null, "Please check current password field.");
                 }
+                //checking if both new password fields have the same password
+                else if (!newPassword.equals(newPasswordConfirmation)) {
+                    JOptionPane.showMessageDialog(null, "Passwords do not match. Please check again.");
+                }
+                //checking if new password is the same as old one
+                else if (Encrypt.text(newPassword).equals(originalHash)) {
+                    JOptionPane.showMessageDialog(null, "New password can't be old password.");
+                }
+                else {
+                    //finally changing password if everything is correct
+                    try {
+                        Files.write(file, Collections.singleton(Encrypt.text(newPassword)));
+                        //password changed message
+                        JOptionPane.showMessageDialog(null, "Password changed succesfully. New password is : " + newPassword);
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            } catch (NoSuchAlgorithmException noSuchAlgorithmException) {
+                noSuchAlgorithmException.printStackTrace();
             }
         });
 
