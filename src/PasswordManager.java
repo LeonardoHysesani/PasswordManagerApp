@@ -1,4 +1,6 @@
 import javax.swing.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -41,17 +43,17 @@ public class PasswordManager extends JFrame {
         DONEButton.addActionListener(e ->{
             //current password field
             givenPassword = String.valueOf((passwordField1.getPassword()));
-            //added to help if trying to debug
+            //debugging
             System.out.println("Current password field : " + givenPassword);
 
             //new password field
             newPassword = String.valueOf((passwordField2.getPassword()));
-            //added to help if trying to debug
+            //debugging
             System.out.println("New password field : " + newPassword);
 
             //new password confirmation field
             newPasswordConfirmation = String.valueOf((passwordField3.getPassword()));
-            //added to help if trying to debug
+            //debugging
             System.out.println("New password confirmation field : " + newPasswordConfirmation);
 
 
@@ -74,28 +76,36 @@ public class PasswordManager extends JFrame {
             catch (Exception e1){
                 originalHash = "";
             }
-            //added to help if trying to debug
+            //debugging
             System.out.println("Hash retrieved from file : " + originalHash);
 
 
             //confirmation process
             //checking if current password field is correct
             try {
+                boolean allIsValid = true;
                 if (!originalHash.equals(Encrypt.text(givenPassword))) {
                     JOptionPane.showMessageDialog(null, "Please check current password field.");
+                    allIsValid = false;
                 }
                 //checking if both new password fields have the same password
-                else if (!newPassword.equals(newPasswordConfirmation)) {
+                if (!newPassword.equals(newPasswordConfirmation)) {
                     JOptionPane.showMessageDialog(null, "Passwords do not match. Please check again.");
+                    allIsValid = false;
                 }
-                //checking if new password is the same as old one
-                else if (Encrypt.text(newPassword).equals(originalHash)) {
+                //checking if hashes match
+                if (Encrypt.text(newPassword).equals(originalHash)) {
                     JOptionPane.showMessageDialog(null, "New password can't be old password.");
+                    allIsValid = false;
                 }
-                else {
-                    //finally changing password if everything is correct
+                //finally changing password if everything is correct
+                if (allIsValid) {
                     try {
                         Files.write(file, Collections.singleton(Encrypt.text(newPassword)));
+                        //Clear fields
+                        passwordField1.setText("");
+                        passwordField2.setText("");
+                        passwordField3.setText("");
                         //password changed message
                         JOptionPane.showMessageDialog(null, "Password changed succesfully. New password is : " + newPassword);
                     } catch (IOException ex) {
@@ -118,6 +128,62 @@ public class PasswordManager extends JFrame {
                 passwordField1.setEchoChar((char) 0x2022);
                 passwordField2.setEchoChar((char) 0x2022);
                 passwordField3.setEchoChar((char) 0x2022);
+            }
+        });
+
+        //"Enter" key listeners
+        passwordField1.addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    passwordField2.requestFocus();
+                }
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+
+            }
+        });
+        passwordField2.addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    passwordField3.requestFocus();
+                }
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+
+            }
+        });
+        passwordField3.addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    DONEButton.doClick();
+                }
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+
             }
         });
     }
