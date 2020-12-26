@@ -9,7 +9,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Collections;
 import java.util.Scanner;
 
-public class PasswordManager extends JFrame {
+public class Login extends JFrame {
     //variables
     static String originalHash;
     String givenPassword;
@@ -26,8 +26,8 @@ public class PasswordManager extends JFrame {
 
     //frame management
     public static void main(String[] args) {
-        JFrame frame = new JFrame("PasswordManager");
-        frame.setContentPane(new PasswordManager().panel1);
+        JFrame frame = new JFrame("PasswordManager Login");
+        frame.setContentPane(new Login().panel1);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
         frame.setVisible(true);
@@ -38,7 +38,8 @@ public class PasswordManager extends JFrame {
 
 
     //getting/checking/setting passwords and adjusting fields' visibility
-    public PasswordManager() {
+    public Login() {
+
         //button action
         DONEButton.addActionListener(e ->{
             //current password field
@@ -56,22 +57,26 @@ public class PasswordManager extends JFrame {
             //debugging
             System.out.println("New password confirmation field : " + newPasswordConfirmation);
 
+            //cleaning input
+            givenPassword = givenPassword.trim();
+            newPassword = newPassword.trim();
+            newPasswordConfirmation = newPasswordConfirmation.trim();
 
             //file management and final steps to changing password
 
             //getting hash from stored file
             Path file = Paths.get("/home/leonardo/IdeaProjects/PasswordManagerApp/src/password.txt");
-            Scanner fileReader = null;
+            Scanner fileReader2 = null;
             try {
-                fileReader = new Scanner(file);
+                fileReader2 = new Scanner(file);
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
 
             //setting hash's value to variable
-            assert fileReader != null;
+            assert fileReader2 != null;
             try {
-                originalHash = fileReader.next();
+                originalHash = fileReader2.next();
             }
             catch (Exception e1){
                 originalHash = "";
@@ -84,6 +89,10 @@ public class PasswordManager extends JFrame {
             //checking if current password field is correct
             try {
                 boolean allIsValid = true;
+                if (givenPassword.equals("") || newPassword.equals("") || newPasswordConfirmation.equals("")) {
+                    JOptionPane.showMessageDialog(null, "Password can't be empty");
+                    allIsValid = false;
+                }
                 if (!originalHash.equals(Encrypt.text(givenPassword))) {
                     JOptionPane.showMessageDialog(null, "Please check current password field.");
                     allIsValid = false;
@@ -108,6 +117,7 @@ public class PasswordManager extends JFrame {
                         passwordField3.setText("");
                         //password changed message
                         JOptionPane.showMessageDialog(null, "Password changed succesfully. New password is : " + newPassword);
+                        new AccountsManager();
                     } catch (IOException ex) {
                         ex.printStackTrace();
                     }
@@ -117,7 +127,7 @@ public class PasswordManager extends JFrame {
             }
         });
 
-        //fields' visibility
+        //passwords' visibility
         checkBox1.addActionListener(e -> {
             if(checkBox1.isSelected()) {
                 passwordField1.setEchoChar((char) 0);
@@ -131,7 +141,7 @@ public class PasswordManager extends JFrame {
             }
         });
 
-        //"Enter" key listeners
+        //Key listeners
         passwordField1.addKeyListener(new KeyListener() {
             @Override
             public void keyTyped(KeyEvent e) {
@@ -140,7 +150,7 @@ public class PasswordManager extends JFrame {
 
             @Override
             public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER || e.getKeyCode() == KeyEvent.VK_DOWN) {
                     passwordField2.requestFocus();
                 }
             }
@@ -158,8 +168,11 @@ public class PasswordManager extends JFrame {
 
             @Override
             public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER || e.getKeyCode() == KeyEvent.VK_DOWN) {
                     passwordField3.requestFocus();
+                }
+                if (e.getKeyCode() == KeyEvent.VK_UP) {
+                    passwordField1.requestFocus();
                 }
             }
 
@@ -176,6 +189,9 @@ public class PasswordManager extends JFrame {
 
             @Override
             public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_UP) {
+                    passwordField2.requestFocus();
+                }
                 if (e.getKeyCode() == KeyEvent.VK_ENTER) {
                     DONEButton.doClick();
                 }
@@ -186,5 +202,6 @@ public class PasswordManager extends JFrame {
 
             }
         });
+
     }
 }
